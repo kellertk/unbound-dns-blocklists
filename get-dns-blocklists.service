@@ -1,0 +1,9 @@
+[Unit]
+Description=Update DNS blocklists
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/get-dns-blocklists.sh
+
+[Install]
+WantedBy=multi-user.target
