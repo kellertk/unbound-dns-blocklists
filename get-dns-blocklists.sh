@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -uo pipefail
 
 URL="https://v.firebog.net/hosts/lists.php?type=tick"
