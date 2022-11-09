@@ -1,10 +1,12 @@
 #!/bin/bash
 set -uo pipefail
 
-URL="https://v.firebog.net/hosts/lists.php?type=tick"
-
 echo "$(date -Is) Getting list of blocklists" 
+URL="https://v.firebog.net/hosts/lists.php?type=tick"
 LISTS=$(/usr/bin/curl -s ${URL})
+
+# More lists
+LISTS="https://ente.dev/api/blocklist/advertising-hosts https://ente.dev/api/blocklist/suspicious-hosts https://ente.dev/api/blocklist/tracking-hosts $LISTS"
 
 echo "$(date -Is) Got $(echo ${LISTS} | awk '{print NF}') lists"
 echo "$(date -Is) Getting blocklist contents"
@@ -22,7 +24,7 @@ for i in "${procs[@]}"
 do
         TMP=$(/usr/bin/mktemp)
         tmps+=("$TMP")
-        $i | sed -e '/^[[:blank:]]*#/d' -re 's/^([0-9]\.){3}[0-9] //' -e '/./!d' -e 's/\r//' -re 's/(.*)(#.*)/\1/' -e 's/^/local\-zone\: \"/' -e 's/\.$//' -e 's/[[:alnum:]][[:blank:]]*$/\" always_nxdomain/' >> $TMP &
+        $i | sed -e '/^[[:blank:]]*#/d' -re 's/^([0-9]\.){3}[0-9] //' -e '/./!d' -e 's/\r//' -re 's/(.*)(#.*)/\1/' -e 's/^\.//' -e 's/^/local\-zone\: \"/' -e 's/\.$//' -e 's/[[:alnum:]][[:blank:]]*$/\" always_nxdomain/' >> $TMP &
         pids+=("$!")
 done
 while true
